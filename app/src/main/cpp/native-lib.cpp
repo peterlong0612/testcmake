@@ -162,7 +162,7 @@ Java_com_example_myapplication_MainActivity_matrixFromJNI(
     imageGreenChannelAvg = mean(imageGreenChannel)[0];
     imageRedChannelAvg = mean(imageRedChannel)[0];
 
-    //求出各通道所占增益
+    //求出个通道所占增益
     double K = (imageRedChannelAvg+imageGreenChannelAvg+imageRedChannelAvg)/3;
     double Kb = K/imageBlueChannelAvg;
     double Kg = K/imageGreenChannelAvg;
@@ -338,10 +338,9 @@ Java_com_example_myapplication_MainActivity_outoffocus(
         JNIEnv *env,
         jobject  instance,
         jobject bitmap){
-    Mat in;
-    BitmapToMat(env,bitmap,in);
+    //BitmapToMat(env,bitmap,in);
     Mat src;
-    cvtColor(in, src, COLOR_BGR2GRAY);
+    src = imread("oof.jpeg");
     Mat imgOut;
     LOGD("matrix created");
     // 偶数处理，神级操作
@@ -359,14 +358,14 @@ Java_com_example_myapplication_MainActivity_outoffocus(
     filter2DFreq(src(roi), imgOut, Hw);
     LOGD("after freq");
     // 归一化显示
-    imgOut.convertTo(imgOut, CV_8U);
+    //imgOut.convertTo(imgOut, CV_8U);
 
     normalize(imgOut, imgOut, 0, 255, NORM_MINMAX);
     Mat output;
-    imgOut.convertTo(output,CV_8UC4);
-    MatToBitmap(env,output,bitmap);
-}
-*/
+    imwrite("oofout.jpg",imgOut);
+    //imgOut.convertTo(output,CV_8UC4);
+    //MatToBitmap(env,output,bitmap);
+}*/
 
 
 //图像修复
@@ -376,11 +375,12 @@ Java_com_example_myapplication_MainActivity_repair(
         jobject  instance,
         jobject bitmap){
 
-    Mat imageSource;
-    BitmapToMat(env,bitmap,imageSource);
-    cvtColor(imageSource,imageSource,COLOR_RGBA2RGB);
-    imageSource.convertTo(imageSource,CV_8UC3);
-
+    Mat imageSource = imread("sdcard/rp.png");
+    if (!imageSource.data)
+    {
+        return ;
+    }
+    //imshow("原图", imageSource);
     Mat imageGray;
     //转换为灰度图
     cvtColor(imageSource, imageGray, COLOR_RGB2GRAY, 0);
@@ -390,13 +390,100 @@ Java_com_example_myapplication_MainActivity_repair(
     threshold(imageGray, imageMask, 240, 255, THRESH_BINARY);
     Mat Kernel = getStructuringElement(MORPH_RECT, Size(3, 3));
     //对Mask膨胀处理，增加Mask面积
-
     dilate(imageMask, imageMask, Kernel);
 
     //图像修复
-    inpaint(imageSource, imageMask, imageSource, 5, INPAINT_TELEA);
-    LOGD("check");
-    imageSource.convertTo(imageSource,CV_8UC3);
-    //cvtColor(imageSource,imageSource,COLOR_BGR2RGBA);
-    MatToBitmap(env,imageSource,bitmap);
+    inpaint(imageSource, imageMask, imageSource, 5, INPAINT_NS);
+    imwrite("sdcard/rpoutput.jpg",imageSource);
 }
+
+//去除红眼
+
+//孔洞填充
+void fillHoles(Mat &mask)
+{
+    Mat maskFloodfill = mask.clone();
+    //漫水填充
+    floodFill(maskFloodfill, cv::Point(0, 0), Scalar(255));
+    Mat mask2;
+    //反色
+    bitwise_not(maskFloodfill, mask2);
+    //或运算
+    mask = (mask2 | mask);
+}
+
+extern "C" JNIEXPORT void JNICALL
+Java_com_example_myapplication_MainActivity_redeye(
+        JNIEnv *env,
+        jobject  instance,
+        jobject bitmap,
+        jstring cascadefilename){
+
+    // Read image 读彩色图像
+    Mat img  = imread("sdcard/redeyepic.jpg");
+    //BitmapToMat(env,bitmap,img);
+
+    // Output image 输出图像
+    Mat imgOut = img.clone();
+    const char* cascade_file_name = env->GetStringUTFChars(cascadefilename, NULL);
+    /*CascadeClassifier *eyesCa;
+    if( eyesCa == nullptr){
+        eyesCa = new cv::CascadeClassifier(cascade_file_name);
+    }
+    LOGD("%s",cascade_file_name);
+    // Load HAAR cascade 读取haar分类器
+    //CascadeClassifier eyesCascade("/haarcascade_eye.xml");
+    // Detect eyes 检测眼睛*/
+    CascadeClassifier eyesCa;
+    eyesCa.load("/sdcard/haarcascade_eye.xml");
+    std::vector<Rect> eyes;
+
+    //前四个参数：输入图像，眼睛结果，表示每次图像尺寸减小的比例，表示每一个目标至少要被检测到4次才算是真的
+    //后两个参数：0 | CASCADE_SCALE_IMAGE表示不同的检测模式，最小检测尺寸
+    eyesCa.detectMultiScale(img,eyes, 1.1, 3, 0);
+    LOGD("check");
+    Mat eyeOut;
+    // For every detected eye 每只眼睛都进行处理
+    for (size_t i = 0; i < eyes.size(); i++)
+    {
+        // Extract eye from the image. 提取眼睛图像
+        Mat eye = img(eyes[i]);
+
+        // Split eye image into 3 channels. 颜色分离
+        std::vector<Mat>bgr(3);
+        split(eye, bgr);
+
+        // Simple red eye detector 红眼检测器，获得结果掩模
+        Mat mask = (bgr[2] > 150) & (bgr[2] > (bgr[1] + bgr[0]));
+
+        // Clean mask 清理掩模
+        //填充孔洞
+        fillHoles(mask);
+        //扩充孔洞
+        dilate(mask, mask, Mat(), Point(-1, -1), 3, 1, 1);
+
+        // Calculate the mean channel by averaging the green and blue channels
+        //计算b通道和g通道的均值
+        Mat mean = (bgr[0] + bgr[1]) / 2;
+        //用该均值图像覆盖原图掩模部分图像
+        mean.copyTo(bgr[2], mask);
+        mean.copyTo(bgr[0], mask);
+        mean.copyTo(bgr[1], mask);
+
+        // Merge channels
+        Mat eyeOut;
+        //图像合并
+        cv::merge(bgr, eyeOut);
+
+        // Copy the fixed eye to the output image.
+        // 眼部图像替换
+        eyeOut.copyTo(imgOut(eyes[i]));
+    }
+
+    // Display Result
+    //MatToBitmap(env,imgOut,bitmap);
+    LOGD("aftermat2bitmap");
+    //cvtColor(imgOut,imgOut,COLOR_RGB2BGR);
+    imwrite("sdcard/output.jpg",imgOut);
+}
+
