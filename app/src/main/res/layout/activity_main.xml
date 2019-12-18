@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".MainActivity">
+
+    <TextView
+        android:id="@+id/sample_text"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="88dp"
+        android:text="Hello World!"
+        app:layout_constraintHorizontal_bias="0.517"
+        app:layout_constraintLeft_toLeftOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/button2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="173dp"
+        android:onClick="OnClick"
+        android:text="Button"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.498"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView7" />
+
+    <ImageView
+        android:id="@+id/imageView7"
+        android:layout_width="177dp"
+        android:layout_height="136dp"
+        android:layout_marginTop="276dp"
+        android:layout_marginBottom="56dp"
+        app:layout_constraintBottom_toTopOf="@+id/button2"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.538"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        app:srcCompat="@drawable/pic1" />
+
+    <ImageView
+        android:id="@+id/lightup"
+        android:layout_width="153dp"
+        android:layout_height="163dp"
+        android:layout_marginBottom="38dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/button4"
+        app:layout_constraintVertical_bias="1.0"
+        app:srcCompat="@drawable/lu" />
+
+    <Button
+        android:id="@+id/button4"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="180dp"
+        android:layout_marginBottom="328dp"
+        android:onClick="onclicklightup"
+        android:text="lubutton"
+        app:layout_constraintBottom_toTopOf="@+id/redeye"
+        app:layout_constraintEnd_toEndOf="@+id/imageView7"
+        app:layout_constraintStart_toStartOf="@+id/imageView7"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <Button
+        android:id="@+id/rpbtn"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:onClick="onclickrp"
+        android:text="rp"
+        tools:layout_editor_absoluteX="174dp"
+        tools:layout_editor_absoluteY="250dp" />
+
+    <ImageView
+        android:id="@+id/rp"
+        android:layout_width="307dp"
+        android:layout_height="185dp"
+        app:srcCompat="@drawable/rp"
+        tools:layout_editor_absoluteX="52dp"
+        tools:layout_editor_absoluteY="43dp" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
