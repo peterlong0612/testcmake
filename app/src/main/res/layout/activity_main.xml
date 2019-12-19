@@ -19,9 +19,8 @@
 
         >
 
-
     <Button
-        android:id="@+id/bph_btn"
+        android:id="@+id/btn_bph"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -32,18 +31,18 @@
         />
 
     <Button
-        android:id="@+id/lu_btn"
+        android:id="@+id/btn_lu"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
         android:onClick="OnClick"
         android:background="#99ffff"
-        android:text="调亮"
-        app:layout_constraintTop_toBottomOf="@id/bph_btn" />
+        android:text="曝光"
+        />
 
     <Button
-        android:id="@+id/rp_btn"
+        android:id="@+id/btn_rp"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -51,12 +50,10 @@
         android:onClick="OnClick"
         android:text="图像修复"
         android:background="#ffff99"
-        app:layout_constraintBottom_toTopOf="@+id/redeye"
-        app:layout_constraintEnd_toEndOf="@+id/imageView7"
-        app:layout_constraintTop_toBottomOf="@+id/rp" />
+         />
 
     <Button
-        android:id="@+id/re_btn"
+        android:id="@+id/btn_re"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
@@ -67,65 +64,95 @@
          />
 
     <Button
-        android:id="@+id/oof_btn"
+        android:id="@+id/btn_main_select"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_weight="1"
         android:gravity="center"
         android:onClick="OnClick"
         android:background="#ff99ff"
-        android:text="oofbtn"
+        android:text="选择图片"
         />
     </LinearLayout>
 
     <LinearLayout
+        android:id="@+id/img_list"
         android:orientation="vertical"
         android:layout_height="match_parent"
         android:layout_width="0dp"
-        android:gravity="center_vertical"
         app:layout_constraintLeft_toRightOf="@+id/fun_list"
         app:layout_constraintRight_toRightOf="parent"
-
         >
-        <ImageView
-            android:id="@+id/imageView7"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            app:srcCompat="@drawable/pic1"
-            tools:layout_editor_absoluteX="96dp"
-            tools:layout_editor_absoluteY="157dp"
-            />
-        <ImageView
-            android:id="@+id/rp"
-            android:layout_width="wrap_content"
-            android:layout_height="0dp"
-            android:layout_weight="1"
-            android:gravity="center"
-            app:srcCompat="@drawable/rp" />
 
         <ImageView
-            android:id="@+id/lightup"
+            android:id="@+id/imgViewA"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            app:srcCompat="@drawable/lu"
-            />
+            android:src="@drawable/lu" />
 
         <ImageView
-            android:id="@+id/redeye"
+            android:id="@+id/imgViewB"
             android:layout_width="wrap_content"
             android:layout_height="0dp"
             android:layout_weight="1"
             android:gravity="center"
-            app:srcCompat="@drawable/redeyepic" />
+            android:src="@drawable/redeyepic"
+            />
+
         <TextView
             android:id="@+id/sample_text"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="Hello,world!"
 
-        />
+            />
+
+
+        <!---
+                <ImageView
+                    android:id="@+id/imageView7"
+                    android:layout_width="166dp"
+                    android:layout_height="147dp"
+                    app:srcCompat="@drawable/pic1"
+                    tools:layout_editor_absoluteX="96dp"
+                    tools:layout_editor_absoluteY="157dp" />
+
+                <ImageView
+                    android:id="@+id/rp"
+                    android:layout_width="150dp"
+                    android:layout_height="65dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+
+                    app:srcCompat="@drawable/rp" />
+
+                <ImageView
+                    android:id="@+id/lightup"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    app:srcCompat="@drawable/lu"
+                    />
+
+                <ImageView
+                    android:id="@+id/redeye"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    app:srcCompat="@drawable/redeyepic" />
+                <TextView
+                    android:id="@+id/sample_text"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:text="Hello,world!"
+
+                />
+
+                -->
     </LinearLayout>
 
 
